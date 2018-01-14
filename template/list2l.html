@@ -1,0 +1,12 @@
+<div class="list2l">
+    <div class="category" v-for="(item, index) in model.data" @click="toggle(index)">
+        <div class="title">{{item.name}}</div>
+        <div class="panel" v-show="item.open">
+            <div class="item" v-for="i in item.data">
+                <span>{{i.name}}</span>
+                <div class="item-tools">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

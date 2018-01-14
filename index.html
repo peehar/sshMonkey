@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>SSH Monkey</title>
+    <link rel="stylesheet" href="photon-0.1.2-dist/css/photon.min.css">
+    <link rel="stylesheet" href="node_modules/xterm/dist/xterm.css" />
+    <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="node_modules/vue/dist/vue.js"></script>
+
+</head>
+
+<body>
+    <div id="app" class="window">
+        <header class="toolbar toolbar-header">
+
+            <div class="toolbar-actions">
+                <div class="btn-group">
+                    <button class="btn btn-default">
+                        <span class="icon icon-plus"></span>
+                    </button>
+                    <button class="btn btn-default">
+                        <span class="icon icon-folder"></span>
+                    </button>
+                    <button class="btn btn-default active">
+                        <span class="icon icon-cloud"></span>
+                    </button>
+                    <button class="btn btn-default">
+                        <span class="icon icon-popup"></span>
+                    </button>
+                    <button class="btn btn-default">
+                        <span class="icon icon-shuffle"></span>
+                    </button>
+                </div>
+
+            </div>
+        </header>
+        <div class="window-content">
+            <div class="pane-group">
+                <div class="pane pane-sm sidebar">
+                    <nav class="nav-group">
+                        <div v-for="(item, index) in listData.data">
+                            <div class="nav-group-title list-item" @click="onClickGroup(index)">
+                                <span class="icon" :class="item.open ? 'icon-down-dir' : 'icon-right-dir'" style="flex:0 0 10px;"></span>
+                                <span style="flex:1;">{{item.name}}</span>
+                                <div class="btn-group item-tools">
+                                    <button class="btn btn-mini btn-default">
+                                        <span class="icon icon-home"></span>
+                                    </button>
+                                    <button class="active btn btn-mini btn-default">
+                                        <span class="icon icon-shuffle"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-show="item.open" v-for="(data, i) in item.data">
+                                <div class="nav-group-item list-item" @click="onClickitem(index)">
+                                    <span style="flex:1;">{{data.name}}</span>
+                                    <div class="btn-group">
+                                        <button class="btn btn-mini btn-default">
+                                            <span class="icon icon-home"></span>
+                                        </button>
+                                        <button class="active btn btn-mini btn-default">
+                                            <span class="icon icon-shuffle"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div v-show="item.open" v-for="(data, i) in item.data">
+                                <div class="nav-group-item list-item" @click="onClickitem(index, i)">
+                                    <span class="icon icon-monitor"  style="flex:0 0 10px;"></span>
+                                    <span style="flex:5;">{{data.name}}</span>
+                                    <div class="btn-group item-tools">
+                                        <button class="btn btn-mini btn-default">
+                                            <span class="icon icon-home"></span>
+                                        </button>
+                                        <button class="active btn btn-mini btn-default">
+                                            <span class="icon icon-shuffle"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
+                    </nav>
+                </div>
+
+                <div class="pane">
+                    <div class="tab-group">
+                        <div v-for="(item, index) in tabsData.data" class="tab-item" :class="tabsData.actived == index ? 'active':'null'" @click="onClickTab(index)">
+                            <span class="icon icon-cancel icon-close-tab"></span>
+                            {{item.name}}
+                        </div>
+                    </div>
+                    <div class="terminal-panel" v-for="(item, index) in tabsData.data" v-show="tabsData.actived == index">
+                        <terminal :model="item"></terminal>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        // new Vue({
+        //     el: '#app',
+        //     data() {
+        //         return {
+        //         };
+        //     },
+        //     methods: {
+
+        //     }
+        // })
+
+        require("./js/monkey.js")
+
+        // let { Terminal } = require('xterm');
+
+        // let el = document.getElementById("term");
+
+        // let term = new Terminal();
+
+        // term.open(el);
+        // // term.winptyCompatInit();
+
+        // term.focus();
+
+        // term.write("fdsafds")
+
+
+    </script>
+</body>
+
+</html>

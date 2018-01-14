@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="node_modules/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="node_modules/xterm/dist/xterm.css">
+    <script type="text/javascript" src="node_modules/vue/dist/vue.min.js"></script>
+    <style>
+        .el-header {
+            background-color: #B3C0D1;
+            color: #333;
+            line-height: 60px;
+        }
+
+        .el-aside {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app" class="monkey">
+        <el-container class="container">
+            <el-aside width="300px" style="background-color: rgb(238, 241, 246)">
+                <el-menu  :default-openeds="['0']">
+                    <el-submenu  v-for="(item, index) in listData.data" :index="String(index)">
+                        <template slot="title">
+                            <i class="el-icon-message"></i>{{item.name}}</template>
+                            <el-menu-item v-for="(data, i) in item.data" :index="index +'-' + i" @click="menuClick(index, i)">
+                                <el-row :gutter="20">
+                                    <el-col :span="16"><span>{{data.name}}</span></el-col>
+                                    <el-col :span="8"><div>tools</div></el-col>
+                                </el-row>
+                            </el-menu-item>
+                            
+                    </el-submenu>
+                </el-menu>
+            </el-aside>
+
+            <el-main>
+                <el-tabs @tab-click="onTabClick">
+                    <el-tab-pane :label="item.name" :name="item.name" v-for="(item, index) in tabsData.list" >
+                        <terminal :model="item"></terminal>
+                    </el-tab-pane>
+
+            
+
+                </el-tabs>
+
+               
+            </el-main>
+
+           
+
+        </el-container>
+    </div>
+
+    <!-- 引入组件库 -->
+    <script src="node_modules/element-ui/lib/index.js"></script>
+    <script>
+        require("./js/terminal.js")
+        require("./js/monkey.js")
+
+        // let {Terminal} = require('xterm');
+
+        // let el = document.getElementById("terminal");
+
+        // // setTimeout(() => {
+        //     let term = new Terminal();
+        //    term.open(el);
+
+        //     let a = () => {
+            
+
+                // term.write("fdsfdsafds")
+
+                // setTimeout(a, 1000);
+        //     }
+
+        //     setTimeout(a, 1000);
+        // }, 5000)
+
+   
+
+       
+
+        // new Vue({
+        //     el: '#app',
+        //     data() {
+        //         const item = {
+        //             date: '2016-05-02',
+        //             name: '王小虎',
+        //             address: '上海市普陀区金沙江路 1518 弄'
+        //         };
+        //         return {
+        //             tableData: Array(20).fill(item)
+        //         }
+        //     }
+        // })
+    </script>
+
+</body>
+
+</html>

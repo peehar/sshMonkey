@@ -1,0 +1,28 @@
+.list2l {
+    display: flex;
+    flex-direction: column;
+}
+
+.list2l .category {
+    flex: 1
+}
+
+.list2l .title {
+    padding: 2px;
+    background: lightgrey;
+    cursor: pointer;
+}
+
+.list2l .panel {
+    padding: 2px;
+}
+
+.list2l .item {
+    padding: 2px;
+    padding-left: 5px;
+}
+
+.list2l .item-tools {
+    display: inline-block;
+    float: right;
+}
