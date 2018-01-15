@@ -2,21 +2,20 @@ require("./terminal.js")
 
 let fs = require("fs");
 
+const database = "./database";
+
 let listData;
-if (fs.existsSync("./database")) {
-    listData = fs.readFileSync('./database').toString();
+if (fs.existsSync(database)) {
+    let txt = fs.readFileSync(database).toString();
+    listData = JSON.parse(txt);
 } else {
     listData = {
         actived: null,
-        data: [{
-            name: "新节点",
-            open: false,
-            data: [
-                { name: "asfdsa", host: "192.168.0.100", port: 22, user: "pi", password: "wty17962831" },
-                { name: "aaaaa" }
-            ]
-        }]
+        data: [
+        ]
     };
+
+    fs.writeFileSync(database, JSON.stringify(listData))
 }
 
 console.log(listData)
@@ -26,12 +25,19 @@ var tabData = {
     data: []
 }
 
+let dialogData = {
+    type: null,
+    node: {},
+    host: {},
+}
+
 new Vue({
     el: '#app',
     data() {
         return {
             listData: listData,
-            tabsData: tabData
+            tabsData: tabData,
+            dialogData: dialogData
         };
     },
     computed: {
@@ -43,15 +49,63 @@ new Vue({
         }
     },
     methods: {
-        onClickGroup: function (index) {
+
+        onDblclickGroup: function (l1) {
+            dialogData.type = "node";
+            dialogData.node = listData.data[l1];
+        },
+
+        onDblclickItem: function (l1, l2) {
+            dialogData.type = "host";
+            dialogData.host = listData.data[l1].data[l2];
+        },
+
+        onClickSpace: function () {
+            if (dialogData.type == "node" || dialogData.type == "host") {
+                fs.writeFileSync(database, JSON.stringify(listData))
+                dialogData.type = null;
+            }
+        },
+
+        onClickExpand: function (index) {
             listData.data[index].open = !listData.data[index].open;
         },
-        onClickitem: function (l1, l2) {
+
+        onClickGroup: function (index) {
+            listData.actived = index;
+            if (listData.data[index].data.length == 0) {
+                listData.data[index].open = true;
+            }
+            // listData.data[index].open = !listData.data[index].open;
+        },
+
+        onClickItem: function (l1, l2) {
+            listData.actived = l1 + "," + l2;
+        },
+
+        onClickTab: function (index) {
+            tabData.actived = index;
+        },
+        onAddNode: function () {
+            listData.data.push({
+                name: "New Node",
+                data: [],
+                open: false,
+            });
+        },
+        onAddHost: function (index, e) {
+            // e.stopPropagation();
+            listData.data[index].data.push({
+                name: "New Host"
+            });
+        },
+
+        onConnect: function (l1, l2) {
             let item = listData.data[l1].data[l2];
             tabData.actived = tabData.data.length;
 
             let td = {
-                name: item.name,
+                name: listData.data[l1].name + " - " + item.name,
                 data: item,
                 onClose: onClose
             }
@@ -66,47 +120,17 @@ new Vue({
                     }
                 }
             }
+        },
+
+        deleteHost: function() {
 
         },
-        onClickTab: function (index) {
-            tabData.actived = index;
+        deleteNode: function() {
+
+        },
+
+        ondragstart: function () {
+            console.log("fdasfd");
         }
     }
 })
-
-// // boot up the demo
-// var demo = new Vue({
-//     el: '#app',
-//     data: {
-//         listData: listData,
-//         tabsData: tabData
-//     },
-//     methods: {
-//         menuClick: function(i1, i2) {
-//             let item = listData.data[i1].data[i2];
-//             tabData.list.push({
-//                 name: item.name
-//             })
-//         },
-//         onTabClick: function() {
-//             console.log("fdsfdsafdsafdsafdsaf")
-
-
-
-
-//         }
-//     }
-// })
-
-
-
-
-// // setTimeout(() => {
-//     setTimeout(() => {
-//         let term = new Terminal();
-//         term.open(el);
-
-//         term.resize(80, 50);
-
-//         term.write("fdsafdasfd")
-//     }, 1000);

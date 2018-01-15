@@ -8,29 +8,21 @@
     <link rel="stylesheet" href="node_modules/xterm/dist/xterm.css" />
     <link rel="stylesheet" href="css/style.css">
     <script type="text/javascript" src="node_modules/vue/dist/vue.js"></script>
-
 </head>
 
 <body>
     <div id="app" class="window">
         <header class="toolbar toolbar-header">
-
             <div class="toolbar-actions">
                 <div class="btn-group">
                     <button class="btn btn-default">
-                        <span class="icon icon-plus"></span>
+                        <span class="icon icon-download"></span>
                     </button>
                     <button class="btn btn-default">
-                        <span class="icon icon-folder"></span>
-                    </button>
-                    <button class="btn btn-default active">
-                        <span class="icon icon-cloud"></span>
+                        <span class="icon icon-upload"></span>
                     </button>
                     <button class="btn btn-default">
-                        <span class="icon icon-popup"></span>
-                    </button>
-                    <button class="btn btn-default">
-                        <span class="icon icon-shuffle"></span>
+                        <span class="icon icon-tools"></span>
                     </button>
                 </div>
 
@@ -39,49 +31,61 @@
         <div class="window-content">
             <div class="pane-group">
                 <div class="pane pane-sm sidebar">
-                    <nav class="nav-group">
-                        <div v-for="(item, index) in listData.data">
-                            <div class="nav-group-title list-item" @click="onClickGroup(index)">
-                                <span class="icon" :class="item.open ? 'icon-down-dir' : 'icon-right-dir'" style="flex:0 0 10px;"></span>
-                                <span style="flex:1;">{{item.name}}</span>
-                                <div class="btn-group item-tools">
+                    <ul class="mk-list">
+                        <li v-for="(item, index) in listData.data">
+                            <div class="mk-list-title">
+                                <a class="icon" :class="item.open ? 'icon-down-dir' : 'icon-right-dir'" @click="onClickExpand(index)"> </a>
+                                <a draggable="true" title="双击编辑" @dragstart="ondragstart()" @click="onClickGroup(index)" @dblclick="onDblclickGroup(index)"
+                                    :class="listData.actived == index ? 'selected' : ''">
+                                    {{item.name}}
+                                </a>
+                                <!-- <div class="btn-group">
+                                    <button class="btn btn-mini btn-default" @click="onAddHost(index, $event)">
+                                        <span class="icon icon-plus"></span>
+                                    </button>
                                     <button class="btn btn-mini btn-default">
-                                        <span class="icon icon-home"></span>
+                                        <span class="icon icon-minus"></span>
                                     </button>
-                                    <button class="active btn btn-mini btn-default">
-                                        <span class="icon icon-shuffle"></span>
+                                </div> -->
+                            </div>
+                            <ul v-show="item.open">
+                                <li v-for="(data, i) in item.data">
+                                    <div class="mk-list-title">
+                                        <span class="icon icon-monitor"></span>
+                                        <a @dblclick="onDblclickItem(index, i)" @click="onClickItem(index, i)" :class="listData.actived == index + ',' + i ? 'selected' : ''">
+                                            {{data.name}}
+                                        </a>
+                                        <div class="mk-list-btn-group">
+                                            <button class="btn btn-mini btn-default" @click="onConnect(index, i)">
+                                                <span class="icon icon-link"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li v-show="listData.actived == index">
+                                    <div class="mk-list-title">
+                                        <span class="icon icon-monitor"></span>
+                                        <a>
+                                            <button class="btn btn-mini btn-default" @click="onAddHost(index)">
+                                                <span class="icon icon-plus"></span>
+                                            </button>
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <div class="mk-list-title">
+                                <a class="icon icon-right-dir"> </a>
+                                <a>
+                                    <button class="btn btn-mini btn-default" @click="onAddNode">
+                                        <span class="icon icon-plus"></span>
                                     </button>
-                                </div>
+                                </a>
                             </div>
-                            <div v-show="item.open" v-for="(data, i) in item.data">
-                                <div class="nav-group-item list-item" @click="onClickitem(index)">
-                                    <span style="flex:1;">{{data.name}}</span>
-                                    <div class="btn-group">
-                                        <button class="btn btn-mini btn-default">
-                                            <span class="icon icon-home"></span>
-                                        </button>
-                                        <button class="active btn btn-mini btn-default">
-                                            <span class="icon icon-shuffle"></span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- <div v-show="item.open" v-for="(data, i) in item.data">
-                                <div class="nav-group-item list-item" @click="onClickitem(index, i)">
-                                    <span class="icon icon-monitor"  style="flex:0 0 10px;"></span>
-                                    <span style="flex:5;">{{data.name}}</span>
-                                    <div class="btn-group item-tools">
-                                        <button class="btn btn-mini btn-default">
-                                            <span class="icon icon-home"></span>
-                                        </button>
-                                        <button class="active btn btn-mini btn-default">
-                                            <span class="icon icon-shuffle"></span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div> -->
-                        </div>
-                    </nav>
+                        </li>
+
+                    </ul>
                 </div>
 
                 <div class="pane">
@@ -97,6 +101,67 @@
                 </div>
             </div>
         </div>
+        <div class="mk-dialog-bg" v-show="dialogData.type != null" @click="onClickSpace">
+        </div>
+        <div class="mk-dialog mk-dialog-node" v-show="dialogData.type=='node'">
+            <div class="content">
+                <div>
+                    <span>Name: </span>
+                    <input v-model="dialogData.node.name" />
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-mini btn-negative" @click="deleteNode">
+                    Delete this Node and All Children !
+                </button>
+            </div>
+        </div>
+        <div class="mk-dialog mk-dialog-host" v-show="dialogData.type=='host'">
+
+            <div class="content">
+                <div>
+                    <span>Name: </span>
+                    <input v-model="dialogData.host.name" />
+                </div>
+                <div>
+                    <span>Host: </span>
+                    <input v-model="dialogData.host.host" />
+                </div>
+                <div>
+                    <span>Port: </span>
+                    <input v-model="dialogData.host.port" />
+                </div>
+                <div>
+                    <span>User: </span>
+                    <input v-model="dialogData.host.user" />
+                </div>
+                <div>
+                    <span>Password: </span>
+                    <input type="password" v-model="dialogData.host.password" />
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-mini btn-negative" @click="deleteHost(index, i)">
+                    Delete this Host !
+                </button>
+            </div>
+        </div>
+
+        <div class="mk-dialog mk-dialog-confirm" v-show="dialogData.type=='confirm'">
+            <div>
+                <span class="icon icon-attention" style="font-size:38px;color:darkred;"></span>
+                <span style="font-size:18px; margin-left:20px;">Are You Sure ?</span>
+            </div>
+            <div class="btn-group btn-group-right">
+                <button class="btn btn-mini btn-default">
+                    Yes
+                </button>
+                <button class="btn btn-mini btn-default">
+                    No
+                </button>
+            </div>
+        </div>
+
     </div>
     <script>
 

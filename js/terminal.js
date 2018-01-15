@@ -54,6 +54,7 @@ Vue.component('terminal', {
                     term.write(txt);
                 });
                 stream.on("close", function () {
+                    term.destroy();
                     if (model.onClose) {
                         model.onClose();
                     }
