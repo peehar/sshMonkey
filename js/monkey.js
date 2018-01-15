@@ -50,14 +50,14 @@ new Vue({
     },
     methods: {
 
-        onDblclickGroup: function (l1) {
+        onDblclickGroup: function (node) {
             dialogData.type = "node";
-            dialogData.node = listData.data[l1];
+            dialogData.node = node;
         },
 
-        onDblclickItem: function (l1, l2) {
+        onDblclickItem: function (host, node) {
             dialogData.type = "host";
-            dialogData.host = listData.data[l1].data[l2];
+            dialogData.host = host;
         },
 
         onClickSpace: function () {
@@ -67,25 +67,25 @@ new Vue({
             }
         },
 
-        onClickExpand: function (index) {
-            listData.data[index].open = !listData.data[index].open;
+        onClickExpand: function (node) {
+            node.open = !node.open;
         },
 
-        onClickGroup: function (index) {
-            listData.actived = index;
-            if (listData.data[index].data.length == 0) {
-                listData.data[index].open = true;
+        onClickGroup: function (node) {
+            listData.actived = node;
+            if (node.data.length == 0) {
+                node.open = true;
             }
-            // listData.data[index].open = !listData.data[index].open;
         },
 
-        onClickItem: function (l1, l2) {
-            listData.actived = l1 + "," + l2;
+        onClickItem: function (host, node) {
+            listData.actived = host;
         },
 
-        onClickTab: function (index) {
-            tabData.actived = index;
+        onClickTab: function (data) {
+            tabData.actived = data;
         },
+
         onAddNode: function () {
             listData.data.push({
                 name: "New Node",
@@ -93,29 +93,35 @@ new Vue({
                 open: false,
             });
         },
-        onAddHost: function (index, e) {
-            // e.stopPropagation();
-            listData.data[index].data.push({
+
+        onAddHost: function (node) {
+            node.data.push({
                 name: "New Host"
             });
         },
 
-        onConnect: function (l1, l2) {
-            let item = listData.data[l1].data[l2];
-            tabData.actived = tabData.data.length;
-
+        onConnect: function (host, node) {
             let td = {
-                name: listData.data[l1].name + " - " + item.name,
-                data: item,
+                name: node.name + " - " + host.name,
+                host: host,
                 onClose: onClose
             }
             tabData.data.push(td)
+            tabData.actived = td;
 
             function onClose() {
                 for (let i = 0, len = tabData.data.length; i < len; i++) {
                     let item = tabData.data[i];
                     if (item === td) {
+                        if (i < len - 1) {
+                            tabData.actived = tabData.data[i + 1];
+                        } else if (i > 0) {
+                            tabData.actived = tabData.data[i - 1];
+                        } else {
+                            tabData.actived = null;
+                        }
                         tabData.data.splice(i, 1);
+                        console.log(i)
                         break;
                     }
                 }

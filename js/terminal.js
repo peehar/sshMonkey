@@ -65,10 +65,10 @@ Vue.component('terminal', {
             });
 
         }).connect({
-            host: this.model.data.host,
-            port: this.model.data.port,
-            username: this.model.data.user,
-            password: this.model.data.password
+            host: this.model.host.host,
+            port: this.model.host.port,
+            username: this.model.host.user,
+            password: this.model.host.password
         });
 
     },
