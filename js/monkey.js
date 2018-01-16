@@ -1,8 +1,10 @@
 let fs = require("fs");
 let { Terminal } = require('xterm');
+let fit = require("xterm/dist/addons/fit") 
 var Client = require('ssh2').Client;
-
 const database = "./database";
+
+Terminal.applyAddon(fit); 
 
 let listData = { actived: null, data: [] };
 let termPlanel = { data:[], actived: null };
@@ -13,7 +15,9 @@ window.windowResize = function(a) {
     for (let i = 0; i < termPlanel.data.length; i++) {
         let p = termPlanel.data[i];
         p.term.fit();
-        p.channel.setWindow(p.term.rows, p.term.cols);
+        if (p.channel) {
+            p.channel.setWindow(p.term.rows, p.term.cols);
+        }
     }
 }
 
@@ -155,6 +159,7 @@ window.onload = function () {
 
         let panel = document.getElementById("termianl");
         var el = document.createElement("div");
+        // el.style.display = "none";
         el.classList.add("term")
         // el.style.width = "100%";
         // el.style.height = "100%";
@@ -178,6 +183,8 @@ window.onload = function () {
 
         let len = termPlanel.data.length;
 
+        showTerminal(len - 1);
+
         conn.on('ready', function () {
 
             conn.shell({
@@ -196,7 +203,7 @@ window.onload = function () {
                         stream.write(a);
                     });
                     item.channel = stream;
-                    showTerminal(len - 1);
+                    
                 } else {
 
                 }

@@ -4,117 +4,6 @@ html, body {
     height: 100%;
 }
 
-/* .monkey {
-    height: 100%;
-}
-
-.monkey .container {
-    height: 100%;
-    width: 100%;
-    border: 1px solid #eee;
-} */
-
-/* 
-.monkey #tree-panel {
-    flex: 0 0 200px;
-}
-
-.monkey #tree-expand {
-    flex: 0 0 10px;
-    background: gray;
-}
-
-.monkey #tabs {
-    flex: 1;
-}
-
-
-.bold {
-    font-weight: bold;
-}
-
-ul {
-    height: 100%;
-    width: 100%;
-    list-style-type: dot;
-    margin: 0px;
-    padding:0px;
-}
-
-.tree-node:hover
-{ 
-    background-color:skyblue;
-}
-
-li {
-    list-style-type:none;
-    padding-left:20px;
-} */
-
-
-/* .tree-panel {
-    float: left;
-    width: 300px;
-    height: 100%;
-    border-right: 1px solid gray;
-}
-
-.terminaljs {
-    background: black;
-    color: white;
-    font-family: Courier, monospace;
-    display:inline-block;
-    font-size: 12px;
-    /* width: 500px;
-    height: 400px; */
-/* }  */
-
-
-.tta {
-    /* background: red; */
-    color: white;
-    font-family: Courier, monospace;
-    display:inline-block;
-    font-size: 12px;
-    width: 960px;
-    height: 700px;
-    margin: 0 auto;
-    padding: 2px;
-}  
-
-.group-title .list-item {
-    cursor: pointer;
-}
-
-.group-title:hover {
-    background: #ddd;
-}
-.list-item {
-    cursor: pointer;
-    display: flex;
-}
-
-.item:hover {
-    background: #ddd;
-}
-
-.terminal-panel {
-    /* height: 100%; */
-}
-
-.item-tools {
-    /* float: right; */
-    /* margin-top: 3px; */
-}
-
-.nav-group-item .icon {
-    font-size:12px;
-}
-
-.item-tools .icon {
-    font-size:14px;
-}
-
 .mk-list {
     margin: 5px;
     padding: 0px;
@@ -131,11 +20,7 @@ li {
 }
 
 .mk-list .mk-list-title {
-    /* display: flex; */
-    /* flex-direction: row;  */
-    /* background: red; */
     padding:5px;
-    /* cursor: pointer; */
 }
 
 
@@ -151,20 +36,7 @@ li {
 .mk-list .selected {
     background:  #ddd;
     border: 1px solid #aaa;
-    border-radius:5px;
-}
-.mk-list .addbtn {
-    background: #fff;
-    text-align: center;
-    /* height: 3px; */
-    overflow: hidden;
-    cursor: pointer;
-    border: 1px dashed #ccc;
-    height: 24px;
-}
-
-.mk-list .addbtn:hover {
-    /* border: 1px dashed red; */
+    border-radius:3px;
 }
 
 .mk-content {
@@ -192,7 +64,6 @@ li {
     background: gray;
     opacity:0.5;
     z-index: 2000;
-    
 }
 
 .mk-dialog {
@@ -209,26 +80,20 @@ li {
 
 .mk-dialog-node {
     width: 260px;
-    /* height: 80px; */
     margin-left: -128px;
     margin-top: -40px;
-    /* display: none; */
 }
 
 .mk-dialog-host {
     width: 260px;
-    /* height: 180px; */
     margin-left: -128px;
     margin-top: -100px;
-    /* display: none; */
 }
 
 .mk-dialog-confirm {
     width: 220px;
-    /* height: 180px; */
     margin-left: -128px;
     margin-top: -100px;
-    /* display: none; */
 }
 
 .mk-dialog .content div {
@@ -245,7 +110,6 @@ li {
 }
 
 .mk-dialog .btn-group  {
-    /* float: right; */
     padding-top:5px;
 }
 
