@@ -1,142 +1,248 @@
-require("./terminal.js")
-
 let fs = require("fs");
+let { Terminal } = require('xterm');
+var Client = require('ssh2').Client;
 
 const database = "./database";
 
-let listData;
-if (fs.existsSync(database)) {
-    let txt = fs.readFileSync(database).toString();
-    listData = JSON.parse(txt);
-} else {
-    listData = {
-        actived: null,
-        data: [
-        ]
-    };
+let listData = { actived: null, data: [] };
+let termPlanel = { data:[], actived: null };
+let dialogData = { type: null, node: {}, host: {}, func: null }
 
-    fs.writeFileSync(database, JSON.stringify(listData))
+window.windowResize = function(a) {
+    // termPlanel.data.
+    for (let i = 0; i < termPlanel.data.length; i++) {
+        let p = termPlanel.data[i];
+        p.term.fit();
+        p.channel.setWindow(p.term.rows, p.term.cols);
+    }
 }
 
-console.log(listData)
+window.onload = function () {
 
-var tabData = {
-    actived: null,
-    data: []
-}
+    if (fs.existsSync(database)) {
+        let txt = fs.readFileSync(database).toString();
+        listData = JSON.parse(txt);
+    } else {
+        fs.writeFileSync(database, JSON.stringify(listData))
+    }
 
-let dialogData = {
-    type: null,
-    node: {},
-    host: {},
-}
-
-new Vue({
-    el: '#app',
-    data() {
-        return {
-            listData: listData,
-            tabsData: tabData,
-            dialogData: dialogData
-        };
-    },
-    computed: {
-        menuitemClasses: function () {
-            return [
-                'menu-item',
-                this.isCollapsed ? 'collapsed-menu' : ''
-            ]
-        }
-    },
-    methods: {
-
-        onDblclickGroup: function (node) {
-            dialogData.type = "node";
-            dialogData.node = node;
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                listData: listData,
+                termPlanel: termPlanel,
+                dialogData: dialogData
+            };
         },
-
-        onDblclickItem: function (host, node) {
-            dialogData.type = "host";
-            dialogData.host = host;
-        },
-
-        onClickSpace: function () {
-            if (dialogData.type == "node" || dialogData.type == "host") {
-                fs.writeFileSync(database, JSON.stringify(listData))
-                dialogData.type = null;
+        computed: {
+            menuitemClasses: function () {
+                return [
+                    'menu-item',
+                    this.isCollapsed ? 'collapsed-menu' : ''
+                ]
             }
         },
+        methods: {
 
-        onClickExpand: function (node) {
-            node.open = !node.open;
-        },
+            onDblclickGroup: function (node) {
+                dialogData.type = "node";
+                dialogData.node = node;
+                dialogData.host = {};
+            },
 
-        onClickGroup: function (node) {
-            listData.actived = node;
-            if (node.data.length == 0) {
-                node.open = true;
-            }
-        },
+            onDblclickItem: function (host, node) {
+                dialogData.type = "host";
+                dialogData.node = node;
+                dialogData.host = host;
+            },
 
-        onClickItem: function (host, node) {
-            listData.actived = host;
-        },
+            onClickSpace: function () {
+                if (dialogData.type == "node" || dialogData.type == "host") {
+                    fs.writeFileSync(database, JSON.stringify(listData))
+                    dialogData.type = null;
+                }
+            },
 
-        onClickTab: function (data) {
-            tabData.actived = data;
-        },
+            onClickExpand: function (node) {
+                node.open = !node.open;
+            },
 
-        onAddNode: function () {
-            listData.data.push({
-                name: "New Node",
-                data: [],
-                open: false,
-            });
-        },
+            onClickGroup: function (node) {
+                listData.actived = node;
+                if (node.data.length == 0) {
+                    node.open = true;
+                }
+            },
 
-        onAddHost: function (node) {
-            node.data.push({
-                name: "New Host"
-            });
-        },
+            onClickItem: function (host, node) {
+                listData.actived = host;
+            },
 
-        onConnect: function (host, node) {
-            let td = {
-                name: node.name + " - " + host.name,
-                host: host,
-                onClose: onClose
-            }
-            tabData.data.push(td)
-            tabData.actived = td;
+            onClickTab: function (index) {
+                showTerminal(index);
+            },
 
-            function onClose() {
-                for (let i = 0, len = tabData.data.length; i < len; i++) {
-                    let item = tabData.data[i];
-                    if (item === td) {
-                        if (i < len - 1) {
-                            tabData.actived = tabData.data[i + 1];
-                        } else if (i > 0) {
-                            tabData.actived = tabData.data[i - 1];
-                        } else {
-                            tabData.actived = null;
+            onAddNode: function () {
+                listData.data.push({
+                    name: "New Node",
+                    data: [],
+                    open: false,
+                });
+            },
+
+            onAddHost: function (node) {
+                node.data.push({
+                    name: "New Host"
+                });
+            },
+
+            onConnect: function (host, node) {
+                openTerminal(host, node);
+            },
+
+            onTabClose: function(index) {
+                let item = termPlanel.data[index];
+                closeTermianl(item);
+            },
+
+            deleteHost: function () {
+                let node = dialogData.node;
+                let host = dialogData.host;
+                dialogData.type = "confirm";
+                dialogData.func = function() {
+                    for (let i = 0, len = node.data.length; i < len; i++) {
+                        if (node.data[i] == host) {
+                            node.data.splice(i, 1);
+                            break;
                         }
-                        tabData.data.splice(i, 1);
-                        console.log(i)
-                        break;
                     }
                 }
+            },
+
+            deleteNode: function () {
+                let node = dialogData.node;
+                dialogData.type = "confirm";
+                dialogData.func = function() {
+                    for (let i = 0, len = listData.data.length; i < len; i++) {
+                        if (listData.data[i] == node) {
+                            listData.data.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+            },
+
+            confirmYes: function() {
+                dialogData.func();
+                dialogData.type = null;
+                dialogData.func = null;
+                fs.writeFileSync(database, JSON.stringify(listData))
+            },
+
+            confirmNo: function() {
+                dialogData.type = null;
+                dialogData.func = null;
+            },
+
+            ondragstart: function () {
+                console.log("fdasfd");
             }
-        },
+        }
+    });
 
-        deleteHost: function() {
+    function openTerminal(host, node) {
 
-        },
-        deleteNode: function() {
+        let panel = document.getElementById("termianl");
+        var el = document.createElement("div");
+        el.classList.add("term")
+        // el.style.width = "100%";
+        // el.style.height = "100%";
+        panel.appendChild(el);
 
-        },
+        let term = new Terminal();
+        term.open(el);
+        term.focus();
+        term.fit();
 
-        ondragstart: function () {
-            console.log("fdasfd");
+        var conn = new Client();
+
+        let item = {
+            name: node.name + " - " + host.name,
+            el: el,
+            term: term,
+            conn: conn,
+            channel: null
+        }
+        termPlanel.data.push(item);
+
+        let len = termPlanel.data.length;
+
+        conn.on('ready', function () {
+
+            conn.shell({
+                cols: term.cols,
+                rows: term.rows,
+            }, function (err, stream) {
+                if (!err) {
+                    stream.on('data', function (chunk) {
+                        let txt = chunk.toString();
+                        term.write(txt);
+                    });
+                    stream.on("close", function () {
+                        closeTermianl(item);
+                    })
+                    term.on('data', function (a) {
+                        stream.write(a);
+                    });
+                    item.channel = stream;
+                    showTerminal(len - 1);
+                } else {
+
+                }
+            });
+
+        }).connect({
+            host: host.host,
+            port: host.port,
+            username: host.user,
+            password: host.password
+        });
+    }
+
+    function showTerminal(index) {
+        termPlanel.actived = index;
+        for (let i = 0; i < termPlanel.data.length; i++) {
+            let p = termPlanel.data[i];
+            if (i == index) {
+                p.el.style.display = "block";
+                setTimeout(() => {
+                    p.term.fit();
+                    p.channel.setWindow(p.term.rows, p.term.cols);
+                    p.term.focus();
+                }, 0);
+            } else {
+                p.el.style.display = "none";
+            }
         }
     }
-})
+
+    function closeTermianl(data) {
+        for (let i = 0, len = termPlanel.data.length; i < len; i++) {
+            if (termPlanel.data[i] == data) {
+                termPlanel.data.splice(i, 1);
+                if (i < len - 1) {
+                    showTerminal(i);
+                } else if (i > 0) {
+                    showTerminal(i - 1);
+                } else {
+                    showTerminal(null);
+                }
+                break;
+            }
+        }
+        data.term.destroy();
+        data.el.parentElement.removeChild(data.el);
+    }
+
+}

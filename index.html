@@ -8,9 +8,12 @@
     <link rel="stylesheet" href="node_modules/xterm/dist/xterm.css" />
     <link rel="stylesheet" href="css/style.css">
     <script type="text/javascript" src="node_modules/vue/dist/vue.js"></script>
+    <script>
+        require("./js/monkey.js")
+    </script>
 </head>
 
-<body>
+<body onresize="windowResize()">
     <div id="app" class="window">
         <header class="toolbar toolbar-header">
             <div class="toolbar-actions">
@@ -38,21 +41,12 @@
                                     :class="listData.actived == item ? 'selected' : ''">
                                     {{item.name}}
                                 </a>
-                                <!-- <div class="btn-group">
-                                    <button class="btn btn-mini btn-default" @click="onAddHost(index, $event)">
-                                        <span class="icon icon-plus"></span>
-                                    </button>
-                                    <button class="btn btn-mini btn-default">
-                                        <span class="icon icon-minus"></span>
-                                    </button>
-                                </div> -->
                             </div>
                             <ul v-show="item.open">
                                 <li v-for="(data, i) in item.data">
                                     <div class="mk-list-title">
                                         <span class="icon icon-monitor"></span>
-                                        <a @dblclick="onDblclickItem(data, item)" @click="onClickItem(data, item)" 
-                                            :class="listData.actived == data ? 'selected' : ''">
+                                        <a @dblclick="onDblclickItem(data, item)" @click="onClickItem(data, item)" :class="listData.actived == data ? 'selected' : ''">
                                             {{data.name}}
                                         </a>
                                         <div class="mk-list-btn-group">
@@ -87,17 +81,17 @@
                     </ul>
                 </div>
 
-                <div class="pane">
-                    <div class="tab-group">
-                        <div v-for="(item, index) in tabsData.data" class="tab-item" :class="tabsData.actived == item ? 'active':'null'" @click="onClickTab(item)">
-                            <span class="icon icon-cancel icon-close-tab"></span>
+                <div class="pane mk-content">
+                    <div class="tab-group" style="background: #d0ced0;">
+                        <div v-for="(item, index) in termPlanel.data" class="tab-item" :class="termPlanel.actived == index ? 'active':'null'" @click="onClickTab(index)">
+                            <span class="icon icon-cancel icon-close-tab" @click="onTabClose(index)"></span>
                             {{item.name}}
                         </div>
                     </div>
-                    <div class="terminal-panel" v-for="(item, index) in tabsData.data" v-show="tabsData.actived == item">
-                        <terminal :model="item"></terminal>
+                    <div id="termianl">
                     </div>
                 </div>
+
             </div>
         </div>
         <div class="mk-dialog-bg" v-show="dialogData.type != null" @click="onClickSpace">
@@ -140,7 +134,7 @@
                 </div>
             </div>
             <div class="btn-group">
-                <button class="btn btn-mini btn-negative" @click="deleteHost(item, data)">
+                <button class="btn btn-mini btn-negative" @click="deleteHost">
                     Delete this Host !
                 </button>
             </div>
@@ -152,46 +146,17 @@
                 <span style="font-size:18px; margin-left:20px;">Are You Sure ?</span>
             </div>
             <div class="btn-group btn-group-right">
-                <button class="btn btn-mini btn-default">
+                <button class="btn btn-mini btn-default" @click="confirmYes">
                     Yes
                 </button>
-                <button class="btn btn-mini btn-default">
+                <button class="btn btn-mini btn-default" @click="confirmNo">
                     No
                 </button>
             </div>
         </div>
 
     </div>
-    <script>
 
-        // new Vue({
-        //     el: '#app',
-        //     data() {
-        //         return {
-        //         };
-        //     },
-        //     methods: {
-
-        //     }
-        // })
-
-        require("./js/monkey.js")
-
-        // let { Terminal } = require('xterm');
-
-        // let el = document.getElementById("term");
-
-        // let term = new Terminal();
-
-        // term.open(el);
-        // // term.winptyCompatInit();
-
-        // term.focus();
-
-        // term.write("fdsafds")
-
-
-    </script>
 </body>
 
 </html>

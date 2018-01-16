@@ -167,6 +167,23 @@ li {
     /* border: 1px dashed red; */
 }
 
+.mk-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.mk-content .tab-group {
+    flex: 0 0 25px;
+}
+
+.mk-content #termianl {
+    flex: 1;
+    display: flex;
+}
+
+.mk-content #termianl .term {
+    flex: 1;
+}
 
 .mk-dialog-bg {
     position: fixed;
@@ -175,7 +192,7 @@ li {
     background: gray;
     opacity:0.5;
     z-index: 2000;
-    /* display: none; */
+    
 }
 
 .mk-dialog {

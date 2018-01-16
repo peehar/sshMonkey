@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "colors": "^1.1.2",
     "ssh2": "^0.5.5",
     "vue": "^2.5.13",
     "xterm": "^3.0.1"
