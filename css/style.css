@@ -23,10 +23,27 @@ html, body {
     padding:5px;
 }
 
+.mk-list .mk-list-title:hover {
+    background: #cbe0eb;
+}
+
 
 .mk-list .mk-list-title a {
     cursor: pointer;
     padding:3px;
+}
+
+.mk-list .mk-list-title .mk-list-btn-group {
+    display: none;
+}
+
+.mk-list .mk-list-title:hover .mk-list-btn-group {
+    display: inline;
+}
+
+.mk-list .mk-list-title:hover .mk-list-btn-group a {
+    cursor: pointer;
+    font-size: 15px;
 }
 
 .mk-list .mk-list-btn-group {
@@ -37,6 +54,51 @@ html, body {
     background:  #ddd;
     border: 1px solid #aaa;
     border-radius:3px;
+}
+
+.mk-list .mk-list-newnode {
+    height: 5px;
+    text-align: center;
+    opacity: .1;
+    transition: height .5s, opacity 1s, background 1s;
+}
+
+.mk-list .mk-list-newnode:hover {
+    height: 20px;
+    background: rgb(255, 226, 173);
+    border:1px dashed rgb(199, 147, 51);
+    opacity: .8;
+}
+
+.mk-list .mk-list-newnode span {
+    display: none;
+}
+
+.mk-list .mk-list-newnode:hover span {
+    display: inline;
+}
+
+
+.mk-list .mk-list-newbtn {
+    height: 5px;
+    text-align: center;
+    opacity: .1;
+    transition: height .5s, opacity 1s, background 1s;
+}
+
+.mk-list .mk-list-newbtn:hover {
+    height: 20px;
+    background: rgb(255, 226, 173);
+    border:1px dashed rgb(199, 147, 51);
+    opacity: .8;
+}
+
+.mk-list .mk-list-newbtn span {
+    display: none;
+}
+
+.mk-list .mk-list-newbtn:hover span {
+    display: inline;
 }
 
 .mk-content {

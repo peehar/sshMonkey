@@ -35,28 +35,40 @@
                 <div class="pane pane-sm sidebar">
                     <ul class="mk-list">
                         <li v-for="(item, index) in listData.data">
+                            <div class="mk-list-newnode" @click="onAddNode(index)" title="增加分类">
+                                <span class="icon icon-plus" ></span>
+                            </div>
                             <div class="mk-list-title">
                                 <a class="icon" :class="item.open ? 'icon-down-dir' : 'icon-right-dir'" @click="onClickExpand(item)"> </a>
-                                <a draggable="true" title="双击编辑" @dragstart="ondragstart()" @click="onClickGroup(item)" @dblclick="onDblclickGroup(item)"
-                                    :class="listData.actived == item ? 'selected' : ''">
+                                <a draggable="true" @dragstart="ondragstart()">
                                     {{item.name}}
                                 </a>
+                                <div class="mk-list-btn-group">
+                                    <a class="icon icon-pencil" @click="onDblclickGroup(item)" title="编辑"></a>
+                                </div>
                             </div>
                             <ul v-show="item.open">
                                 <li v-for="(data, i) in item.data">
+                                    <div class="mk-list-newbtn" @click="onAddHost(item, i)" title="增加主机">
+                                        <span class="icon icon-plus"></sapn>
+                                    </div>
                                     <div class="mk-list-title">
                                         <span class="icon icon-monitor"></span>
-                                        <a @dblclick="onDblclickItem(data, item)" @click="onClickItem(data, item)" :class="listData.actived == data ? 'selected' : ''">
+                                        <span>
                                             {{data.name}}
-                                        </a>
-                                        <div class="mk-list-btn-group">
-                                            <button class="btn btn-mini btn-default" @click="onConnect(data, item)">
-                                                <span class="icon icon-link"></span>
-                                            </button>
+                                        </span>
+                                        <div class="mk-list-btn-group" >
+                                            <a class="icon icon-pencil" @click="onDblclickItem(data, item)" title="编辑"></a>
+                                            <a class="icon icon-link" @click="onConnect(data, item)" title="链接"></a>
                                         </div>
                                     </div>
                                 </li>
-                                <li v-show="listData.actived == item">
+                                <li>
+                                    <div class="mk-list-newbtn"  @click="onAddHost(item)" title="增加主机">
+                                        <span class="icon icon-plus"></span>
+                                    </div>
+                                </li>
+                                <!-- <li v-show="listData.actived == item">
                                     <div class="mk-list-title">
                                         <span class="icon icon-monitor"></span>
                                         <a>
@@ -65,19 +77,17 @@
                                             </button>
                                         </a>
                                     </div>
-                                </li>
+                                </li> -->
                             </ul>
                         </li>
-                        <li>
-                            <div class="mk-list-title">
-                                <a class="icon icon-right-dir"> </a>
-                                <a>
-                                    <button class="btn btn-mini btn-default" @click="onAddNode">
-                                        <span class="icon icon-plus"></span>
-                                    </button>
-                                </a>
+                        <div class="mk-list-newnode" @click="onAddNode()" title="增加分类">
+                            <span class="icon icon-plus" ></span>
+                        </div>
+                        <!-- <li>
+                            <div class="mk-list-title" style="text-align: center;">
+                                <span class="icon icon-plus" @click="onAddNode"></span>
                             </div>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
 
@@ -110,7 +120,6 @@
             </div>
         </div>
         <div class="mk-dialog mk-dialog-host" v-show="dialogData.type=='host'">
-
             <div class="content">
                 <div>
                     <span>Name: </span>

@@ -72,12 +72,12 @@ window.onload = function () {
                 node.open = !node.open;
             },
 
-            onClickGroup: function (node) {
-                listData.actived = node;
-                if (node.data.length == 0) {
-                    node.open = true;
-                }
-            },
+            // onClickGroup: function (node) {
+            //     listData.actived = node;
+            //     if (node.data.length == 0) {
+            //         node.open = true;
+            //     }
+            // },
 
             onClickItem: function (host, node) {
                 listData.actived = host;
@@ -87,18 +87,32 @@ window.onload = function () {
                 showTerminal(index);
             },
 
-            onAddNode: function () {
-                listData.data.push({
-                    name: "New Node",
-                    data: [],
-                    open: false,
-                });
+            onAddNode: function (index) {
+                if (index !== undefined) {
+                    listData.data.splice(index, 0, {
+                        name: "New Node",
+                        data: [],
+                        open: false,
+                    })
+                } else {
+                    listData.data.push({
+                        name: "New Node",
+                        data: [],
+                        open: false,
+                    });
+                }
             },
 
-            onAddHost: function (node) {
-                node.data.push({
-                    name: "New Host"
-                });
+            onAddHost: function (node, index) {
+                if (index !== undefined) {
+                    node.data.splice(index, 0, {
+                        name: "New Host"
+                    }) 
+                } else {
+                    node.data.push({
+                        name: "New Host"
+                    });
+                }
             },
 
             onConnect: function (host, node) {
